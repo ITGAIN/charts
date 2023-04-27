@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: 
+    app: s4dbs-reverse
+  name: s4dbs-reverse-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: s4dbs-reverse
+  template:
+    metadata:
+      labels:
+        app: s4dbs-reverse
+    spec:
+      containers:
+      - name: s4dbs-reverse
+        image: {{ .Values.s4dbsReverseDeployment.image }}
+        ports:
+        - containerPort: {{ .Values.s4dbsReverseDeployment.port }}
+        imagePullPolicy: Always
+        volumeMounts:
+          - mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+            name: s4dbs-nginx-conf
+            readOnly: true
+      restartPolicy: Always
+      volumes:
+      - name: s4dbs-nginx-conf
+        configMap:
+          name: s4dbs-nginx-conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s4dbs-reverse-service
+spec:
+  selector:
+    app: s4dbs-reverse
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: {{ .Values.s4dbsReverseDeployment.port }}
+      targetPort: {{ .Values.s4dbsReverseDeployment.port }}
+      nodePort: {{ .Values.serverPort }}
