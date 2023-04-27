@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: s4dbs-service
+  name: s4dbs-service-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: s4dbs-service
+  template:
+    metadata:
+      labels:
+        app: s4dbs-service
+    spec:
+      containers:
+      - name: s4dbs-service
+        image: {{ .Values.s4dbsServiceDeployment.image }}
+        ports:
+        - containerPort: {{ .Values.s4dbsServiceDeployment.port }}
+        imagePullPolicy: Always
+        env:
+          - name: PDB_DB_NAME
+            value: {{ .Values.pdb.pdbDbName }}
+          - name: PDB_HOST
+            value: {{ .Values.pdb.pdbHost }}
+          - name: PDB_PASS
+            valueFrom: 
+             secretKeyRef:
+               name: s4dbs-secrets
+               key: postgres-password
+          - name: PDB_PORT
+            value: {{ .Values.pdb.pdbPort | quote  }}
+          - name: PDB_USER
+            value: {{ .Values.pdb.pdbUser }}
+          - name: SPGDB_SERVICE_HOME
+            value: /tmp/spgdb_service_home/
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s4dbs-service-service
+spec:
+  selector:
+    app: s4dbs-service
+  ports:
+    - protocol: TCP
+      port: {{ .Values.s4dbsServiceDeployment.port }}
+      targetPort: {{ .Values.s4dbsServiceDeployment.port }}

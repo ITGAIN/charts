@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: 
+    app: s4dbs-postgres
+  name: s4dbs-postgres-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: s4dbs-postgres
+  template:
+    metadata:
+      labels:
+        app: s4dbs-postgres
+    spec:
+      volumes:
+      - name: postgres-pv-storage
+        persistentVolumeClaim:
+          claimName: {{ .Values.s4dbsPostgresDeployment.persistentVolumeClaimName }}
+      containers:
+      - name: s4dbs-postgres
+        image: {{ .Values.s4dbsPostgresDeployment.image }}
+        ports:
+        - containerPort: {{ .Values.pdb.pdbPort }}
+        imagePullPolicy: Always
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: s4dbs-secrets
+              key: postgres-password
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        volumeMounts:
+        - name: postgres-pv-storage
+          mountPath: /var/lib/postgresql/data/pgdata
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s4dbs-postgres-service
+spec:
+  selector:
+    app: s4dbs-postgres
+  ports:
+    - protocol: TCP
+      port: {{ .Values.pdb.pdbPort }}
+      targetPort: {{ .Values.pdb.pdbPort }}
