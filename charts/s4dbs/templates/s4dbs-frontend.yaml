@@ -24,7 +24,7 @@ spec:
         imagePullPolicy: Always
         env:
           - name: FRONTEND_CONFIG_MODE
-            value: {{ .Value.frontendConfigMode }}
+            value: {{ .Values.frontendConfigMode }}
           - name: SERVICE_PROTOCOL
             value: {{ .Values.serverProtokol }}
           - name: SERVICE_HOST
