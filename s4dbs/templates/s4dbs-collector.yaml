@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: s4dbs-collector
+  name: s4dbs-collector-deployment
+spec:
+  replicas: 1
+  strategy: 
+    type: Recreate
+  selector:
+    matchLabels:
+      app: s4dbs-collector
+  template:
+    metadata:
+      labels:
+        app: s4dbs-collector
+    spec:
+      containers:
+      - name: s4dbs-collector
+        image: {{ .Values.s4dbsCollectorDeployment.image }}
+        imagePullPolicy: Always
+        env:
+          - name: PDB_DB_NAME
+            value: {{ .Values.pdb.pdbDbName }}
+          - name: PDB_HOST
+            value: {{ .Values.pdb.pdbHost }}
+          - name: PDB_PASS
+            valueFrom: 
+             secretKeyRef:
+               name: s4dbs-secrets
+               key: postgres-password
+          - name: PDB_PORT
+            value: {{ .Values.pdb.pdbPort | quote }}
+          - name: PDB_USER
+            value: {{ .Values.pdb.pdbUser }}
+          - name: SPGLOGLEVEL
+            value: {{ .Values.s4dbsCollectorDeployment.spgLogLevel }}
+        volumeMounts:
+          - mountPath: /SPEEDGAIN/licence/Speedgain_for_Databases.licence
+            subPath: Speedgain_for_Databases.licence
+            name: s4dbs-licence
+            readOnly: true
+      restartPolicy: Always
+      volumes:
+      - name: s4dbs-licence
+        configMap:
+          name: s4dbs-licence
