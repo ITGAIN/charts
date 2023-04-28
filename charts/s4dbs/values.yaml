@@ -4,8 +4,10 @@
 
 serverHostname: ##enter dns name of route here (will be created later) ##
 serverPort: 30805
+grafanaPort: 80/grafana
+servicePort: 80
 serverProtokol: http
-frontendConfigMode: true
+frontendConfigMode: false
 
 pdb:
   pdbDbName: speedgain
