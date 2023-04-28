@@ -25,18 +25,6 @@ spec:
         env:
           - name: FRONTEND_CONFIG_MODE
             value: {{ .Values.frontendConfigMode }}
-          - name: SERVICE_PROTOCOL
-            value: {{ .Values.serverProtokol }}
-          - name: SERVICE_HOST
-            value: {{ .Values.serverHostname }}
-          - name: SERVICE_PORT
-            value: {{ .Values.serverPort | quote }}
-          - name: GRAFANA_PROTOCOL
-            value: {{ .Values.serverProtokol }}
-          - name: GRAFANA_HOST
-            value: {{ .Values.serverHostname }}
-          - name: GRAFANA_PORT
-            value: {{ .Values.grafanaPort | quote }}
       restartPolicy: Always
 ---
 apiVersion: v1
