@@ -36,7 +36,7 @@ spec:
           value: /var/lib/postgresql/data/pgdata
         volumeMounts:
         - name: postgres-pv-storage
-          mountPath: /var/lib/postgresql/data/pgdata
+          mountPath: /var/lib/postgresql/data
 ---
 apiVersion: v1
 kind: Service
