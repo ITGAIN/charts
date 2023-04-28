@@ -2,6 +2,21 @@ apiVersion: v1
 entries:
   s4dbs:
   - apiVersion: v2
+    appVersion: 1.4.0
+    created: "2023-04-28T09:27:36.861009213Z"
+    description: A Speedgain for Databases Kubernetes Helm chart
+    digest: ff77592a992e29a4cef908d12da815d3208a85f5dc8556fdb939993468eaa6ff
+    home: https://www.itgain-consulting.de/
+    icon: https://www.itgain-consulting.de/sites/default/files/favicon-16x16.png
+    maintainers:
+    - email: support@itgain.de
+      name: ITGAIN
+    name: s4dbs
+    type: application
+    urls:
+    - https://github.com/ITGAIN/charts/releases/download/s4dbs-1.4.2/s4dbs-1.4.2.tgz
+    version: 1.4.2
+  - apiVersion: v2
     appVersion: 1.4.1
     created: "2023-04-28T08:18:51.294551865Z"
     description: A Speedgain for Databases Kubernetes Helm chart
@@ -61,4 +76,4 @@ entries:
     urls:
     - https://github.com/ITGAIN/charts/releases/download/s4dbs-0.1.0/s4dbs-0.1.0.tgz
     version: 0.1.0
-generated: "2023-04-28T08:18:51.294567265Z"
+generated: "2023-04-28T09:27:36.861041114Z"
