@@ -16,10 +16,10 @@ icon: https://www.itgain-consulting.de/sites/default/files/favicon-16x16.png
 type: application
 
 # This is the chart version.
-version: 1.4.0
+version: 1.4.1
 
 # The version number of the application being deployed.
-appVersion: "1.4.0"
+appVersion: "1.4.1"
 
 maintainers:
 - email: support@itgain.de
