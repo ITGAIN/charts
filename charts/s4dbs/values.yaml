@@ -3,10 +3,9 @@
 # Declare variables to be passed into your templates.
 
 serverHostname: ##enter dns name of route here (will be created later) ##
-serverPort: 30800
-grafanaPort: 30800/grafana
+serverPort: 30805
 serverProtokol: http
-frontendConfigMode: false
+frontendConfigMode: true
 
 pdb:
   pdbDbName: speedgain
@@ -39,4 +38,4 @@ s4dbsFrontendDeployment:
   
 s4dbsReverseDeployment: 
   image: nginx:1.23
-  port: 80
+  port: 8080
