@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-serverHostname: <enter host hostname here>
+serverHostname: ##enter dns name of route here (will be created later) ##
 serverPort: 30800
 grafanaPort: 30800/grafana
 serverProtokol: http
@@ -11,12 +11,12 @@ frontendConfigMode: false
 pdb:
   pdbDbName: speedgain
   pdbHost: s4dbs-postgres-service
-  pdbPass: <PasswordOfPostgresUser>
+  pdbPass: ##PasswordOfPostgresUser##
   pdbPort: 5432
   pdbUser: postgres
 
 s4dbsCollectorDeployment:
-  image: registry.itgain.de/product-development/speedgainfordatabases/pd-speedgaindatabases:1.4.0
+  image: itgainis/s4dbs_collector:1.4.0
   spgLogLevel: DEBUG
 
 s4dbsPostgresDeployment: 
@@ -24,17 +24,17 @@ s4dbsPostgresDeployment:
   persistentVolumeClaimName: s4dbs-postgres-pv-claim
   
 s4dbsServiceDeployment: 
-  image: registry.itgain.de/product-development/speedgainfordatabases/pd-speedgaindatabasesservice:1.4.0
+  image: itgainis/s4dbs_service:1.4.0
   port: 8080
 
 s4dbsGrafanaDeployment: 
-  image: registry.itgain.de/product-development/speedgainfordatabases/pd-speedgainfordatabasesgrafanadashboards:1.4.0
+  image: itgainis/s4dbs_grafana:1.4.0
   port: 3000
   persistentVolumeClaimName: s4dbs-grafana-pv-claim
   persistentVolumeClaimNameDashboards: s4dbs-grafana-dashboards-pv-claim
   
 s4dbsFrontendDeployment: 
-  image: registry.itgain.de/product-development/speedgainfordatabases/pd-speedgainfordatabasesui:1.4.0
+  image: itgainis/s4dbs_frontend:1.4.0
   port: 8080
   
 s4dbsReverseDeployment: 
