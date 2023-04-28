@@ -24,7 +24,7 @@ spec:
         imagePullPolicy: Always
         env:
           - name: FRONTEND_CONFIG_MODE
-            value: {{ .Values.frontendConfigMode }}
+            value: {{ .Values.frontendConfigMode | quote }}
       restartPolicy: Always
 ---
 apiVersion: v1
