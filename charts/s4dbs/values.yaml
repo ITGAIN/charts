@@ -2,13 +2,25 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# serverHostname is the public available dns / server name - e.g. route in an openshift
 serverHostname: ##enter dns name of route here (will be created later) ##
+
+# serverPort is the node port of the reverse proxy - change only if port is already taken within your cluster
 serverPort: 30805
+
+# grafanaPort is the public grafana port for the frontend to redirect correctly - change to 8080/grafana (port of reverse proxy) if not using a route or ingress up front s4dbs
 grafanaPort: 80/grafana
+
+# servicePort is the public service /rest-api port for the frontend to redirect correctly - change to 8080 (port of reverse proxy) if not using a route or ingress up front s4dbs
 servicePort: 80
+
+# serverProtokol depends on your configmap for reverse proxy / nginx
 serverProtokol: http
+
+# frontendConfigMode should not be changed unless you are advised to by support team
 frontendConfigMode: false
 
+# pdb is the overall repository (aka pdb) configuration
 pdb:
   pdbDbName: speedgain
   pdbHost: s4dbs-postgres-service
@@ -16,28 +28,34 @@ pdb:
   pdbPort: 5432
   pdbUser: postgres
 
+# s4dbsCollectorDeployment defines collector image and varas
 s4dbsCollectorDeployment:
   image: itgainis/s4dbs_collector:1.4.0
-  spgLogLevel: DEBUG
+  spgLogLevel: INFO
 
+# s4dbsPostgresDeployment defines timescale image and varas
 s4dbsPostgresDeployment: 
   image: timescale/timescaledb:2.5.1-pg13
   persistentVolumeClaimName: s4dbs-postgres-pv-claim
-  
+
+# s4dbsServiceDeployment defines timescale image and varas
 s4dbsServiceDeployment: 
   image: itgainis/s4dbs_service:1.4.0
   port: 8080
 
+# s4dbsGrafanaDeployment defines timescale image and varas
 s4dbsGrafanaDeployment: 
   image: itgainis/s4dbs_grafana:1.4.0
   port: 3000
   persistentVolumeClaimName: s4dbs-grafana-pv-claim
   persistentVolumeClaimNameDashboards: s4dbs-grafana-dashboards-pv-claim
   
+# s4dbsFrontendDeployment defines timescale image and varas
 s4dbsFrontendDeployment: 
   image: itgainis/s4dbs_frontend:1.4.0
   port: 8080
-  
+
+# s4dbsReverseDeployment defines timescale image and varas 
 s4dbsReverseDeployment: 
   image: nginx:1.23
   port: 8080
