@@ -36,8 +36,8 @@ spec:
             value: {{ .Values.pdb.pdbPort  | default "5432" | quote }}
           - name: PDB_USER
             value: {{ .Values.pdb.pdbUser  | default "postgres" }}
-          - name: GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH
-            value: /grafanaprovisioning/dashboards/s4dbs-spg/S4DBs-Overview.json
+          #- name: GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH
+          #  value: /grafanaprovisioning/dashboards/s4dbs-spg/S4DBs-Overview.json
           - name: GF_SERVER_ROOT_URL
             value: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
           - name: GF_SERVER_SERVE_FROM_SUB_PATH
