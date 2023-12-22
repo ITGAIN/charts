@@ -1,3 +1,20 @@
+{{- if not (lookup "v1" "PersistentVolumeClaim" .Release.Namespace .Values.s4dbsPostgresDeployment.persistentVolumeClaimName) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.s4dbsPostgresDeployment.persistentVolumeClaimName }}
+  annotations:
+    "helm.sh/resource-policy": "keep"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.pdb.storageClassName  | default "managed-csi" }} 
+  # edit storage class name according to your k8s provider in values.yaml
+  resources:
+    requests:
+      storage: {{ .Values.s4dbsPostgresDeployment.persistentVolumeClaimSize }}
+{{- end }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,7 +41,7 @@ spec:
       - name: s4dbs-postgres
         image: {{ .Values.s4dbsPostgresDeployment.image }}
         ports:
-        - containerPort: {{ .Values.pdb.pdbPort }}
+        - containerPort: {{ .Values.pdb.pdbPort  | default "5432" }}
         imagePullPolicy: Always
         env:
         - name: POSTGRES_PASSWORD
@@ -47,5 +64,5 @@ spec:
     app: s4dbs-postgres
   ports:
     - protocol: TCP
-      port: {{ .Values.pdb.pdbPort }}
-      targetPort: {{ .Values.pdb.pdbPort }}
+      port: {{ .Values.pdb.pdbPort  | default "5432" }}
+      targetPort: {{ .Values.pdb.pdbPort  | default "5432" }}

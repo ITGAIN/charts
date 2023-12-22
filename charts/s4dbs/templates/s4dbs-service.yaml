@@ -20,22 +20,22 @@ spec:
       - name: s4dbs-service
         image: {{ .Values.s4dbsServiceDeployment.image }}
         ports:
-        - containerPort: {{ .Values.s4dbsServiceDeployment.port }}
+        - containerPort: {{ .Values.s4dbsServiceDeployment.port  | default "8080" }}
         imagePullPolicy: Always
         env:
           - name: PDB_DB_NAME
-            value: {{ .Values.pdb.pdbDbName }}
+            value: {{ .Values.pdb.pdbDbName  | default "speedgain" }}
           - name: PDB_HOST
-            value: {{ .Values.pdb.pdbHost }}
+            value: {{ .Values.pdb.pdbHost  | default "s4dbs-postgres-service" }}
           - name: PDB_PASS
             valueFrom: 
              secretKeyRef:
                name: s4dbs-secrets
                key: postgres-password
           - name: PDB_PORT
-            value: {{ .Values.pdb.pdbPort | quote  }}
+            value: {{ .Values.pdb.pdbPort  | default "5432" | quote  }}
           - name: PDB_USER
-            value: {{ .Values.pdb.pdbUser }}
+            value: {{ .Values.pdb.pdbUser  | default "postgres" }}
           - name: SPGDB_SERVICE_HOME
             value: /tmp/spgdb_service_home/
       restartPolicy: Always
@@ -49,5 +49,5 @@ spec:
     app: s4dbs-service
   ports:
     - protocol: TCP
-      port: {{ .Values.s4dbsServiceDeployment.port }}
-      targetPort: {{ .Values.s4dbsServiceDeployment.port }}
+      port: {{ .Values.s4dbsServiceDeployment.port  | default "8080" }}
+      targetPort: {{ .Values.s4dbsServiceDeployment.port  | default "8080" }}
