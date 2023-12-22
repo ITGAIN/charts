@@ -20,7 +20,7 @@ spec:
       - name: s4dbs-reverse
         image: {{ .Values.s4dbsReverseDeployment.image }}
         ports:
-        - containerPort: {{ .Values.s4dbsReverseDeployment.port }}
+        - containerPort: {{ .Values.s4dbsReverseDeployment.port  | default "8080" }}
         imagePullPolicy: Always
         volumeMounts:
           - mountPath: /etc/nginx/nginx.conf
@@ -40,9 +40,9 @@ metadata:
 spec:
   selector:
     app: s4dbs-reverse
-  type: NodePort
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
   ports:
     - protocol: TCP
-      port: {{ .Values.s4dbsReverseDeployment.port }}
-      targetPort: {{ .Values.s4dbsReverseDeployment.port }}
-      nodePort: {{ .Values.serverPort }}
+      port: {{ .Values.s4dbsReverseDeployment.publicPort  | default "80" }}
+      targetPort: {{ .Values.s4dbsReverseDeployment.port  | default "8080" }}

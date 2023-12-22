@@ -20,23 +20,23 @@ spec:
       - name: s4dbs-frontend
         image: {{ .Values.s4dbsFrontendDeployment.image }}
         ports:
-        - containerPort: {{ .Values.s4dbsFrontendDeployment.port }}
+        - containerPort: {{ .Values.s4dbsFrontendDeployment.port | default "8080" }}
         imagePullPolicy: Always
         env:
           - name: FRONTEND_CONFIG_MODE
-            value: {{ .Values.frontendConfigMode | quote }}
+            value: {{ .Values.frontendConfigMode | default "false" | quote }}
           - name: SERVICE_PROTOCOL
-            value: {{ .Values.serverProtokol }}
+            value: {{ .Values.serverProtokol | default "http" }}
           - name: SERVICE_HOST
-            value: {{ .Values.serverHostname }}
+            value: {{ .Values.serverHostname | default "notneeded" }}
           - name: SERVICE_PORT
-            value: {{ .Values.servicePort | quote }}
+            value: {{ .Values.servicePort | default "notneeded" | quote }}
           - name: GRAFANA_PROTOCOL
-            value: {{ .Values.serverProtokol }}
+            value: {{ .Values.serverProtokol | default "notneeded" }}
           - name: GRAFANA_HOST
-            value: {{ .Values.serverHostname }}
+            value: {{ .Values.serverHostname | default "notneeded" }}
           - name: GRAFANA_PORT
-            value: {{ .Values.grafanaPort | quote }}
+            value: {{ .Values.grafanaPort | default "notneeded" | quote }}
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -48,5 +48,5 @@ spec:
     app: s4dbs-frontend
   ports:
     - protocol: TCP
-      port: {{ .Values.s4dbsFrontendDeployment.port }}
-      targetPort: {{ .Values.s4dbsFrontendDeployment.port }}
+      port: {{ .Values.s4dbsFrontendDeployment.port | default "8080" }}
+      targetPort: {{ .Values.s4dbsFrontendDeployment.port | default "8080" }}

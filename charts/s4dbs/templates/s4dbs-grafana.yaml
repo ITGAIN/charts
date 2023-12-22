@@ -16,56 +16,57 @@ spec:
       labels:
         app: s4dbs-grafana
     spec:
-      volumes:
-      - name: grafana-pv-storage
-        persistentVolumeClaim:
-          claimName: {{ .Values.s4dbsGrafanaDeployment.persistentVolumeClaimName }}
-      - name: grafana-dashboard-pv-storage
-        persistentVolumeClaim:
-          claimName: {{ .Values.s4dbsGrafanaDeployment.persistentVolumeClaimNameDashboards }}
       containers:
       - name: s4dbs-grafana
         image: {{ .Values.s4dbsGrafanaDeployment.image }}
         ports:
-        - containerPort: {{ .Values.s4dbsGrafanaDeployment.port }}
+        - containerPort: {{ .Values.s4dbsGrafanaDeployment.port  | default "3000" }}
         imagePullPolicy: Always
         env:
           - name: PDB_DB_NAME
-            value: {{ .Values.pdb.pdbDbName }}
+            value: {{ .Values.pdb.pdbDbName  | default "speedgain" }}
           - name: PDB_HOST
-            value: {{ .Values.pdb.pdbHost }}
+            value: {{ .Values.pdb.pdbHost  | default "s4dbs-postgres-service" }}
           - name: PDB_PASS
             valueFrom: 
               secretKeyRef:
                 name: s4dbs-secrets
                 key: postgres-password
           - name: PDB_PORT
-            value: {{ .Values.pdb.pdbPort | quote }}
+            value: {{ .Values.pdb.pdbPort  | default "5432" | quote }}
           - name: PDB_USER
-            value: {{ .Values.pdb.pdbUser }}
-          - name: GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH
-            value: /grafanaprovisioning/dashboards/sfdbs-spg/S4DBs-Overview.json
-          - name: GF_SERVER_SERVE_FROM_SUB_PATH
-            value: "true"
+            value: {{ .Values.pdb.pdbUser  | default "postgres" }}
+          #- name: GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH
+          #  value: /grafanaprovisioning/dashboards/s4dbs-spg/S4DBs-Overview.json
           - name: GF_SERVER_ROOT_URL
             value: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
-          - name: GF_SERVER_DOMAIN
-            value: {{ .Values.serverHostname }}
+          - name: GF_SERVER_SERVE_FROM_SUB_PATH
+            value: "true"
           - name: GF_SECURITY_ALLOW_EMBEDDING
             value: "true"
           - name: GF_AUTH_ANONYMOUS_ENABLED
-            value: "true"
+            value: {{ .Values.s4dbsGrafanaDeployment.anonymousLogin  | default "false" | quote }}
           - name: GF_USERS_DEFAULT_THEME
             value: "light"
           - name: GF_PATHS_PLUGINS
             value: "/grafanaplugins/"
           - name: GF_PATHS_PROVISIONING
             value: "/grafanaprovisioning/"
-        volumeMounts:
-          - name: grafana-pv-storage
-            mountPath: /var/lib/grafana
-          - name: grafana-dashboard-pv-storage
-            mountPath: /grafanaprovisioning/
+          - name: GF_DATABASE_TYPE
+            value: "postgres"
+          - name: GF_DATABASE_HOST
+            value: "{{ .Values.pdb.pdbHost  | default "s4dbs-postgres-service" }}:{{ .Values.pdb.pdbPort  | default "5432" }}"
+          - name: GF_DATABASE_NAME
+            value: {{ .Values.pdb.pdbDbName  | default "speedgain" | quote }}
+          - name: GF_DATABASE_USER
+            value: {{ .Values.pdb.pdbUser  | default "postgres" | quote }}
+          - name: GF_DATABASE_PASSWORD
+            valueFrom: 
+              secretKeyRef:
+                name: s4dbs-secrets
+                key: postgres-password
+          - name: GF_DATABASE_SSL_MODE
+            value: "disable"
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -77,5 +78,5 @@ spec:
     app: s4dbs-grafana
   ports:
     - protocol: TCP
-      port: {{ .Values.s4dbsGrafanaDeployment.port }}
-      targetPort: {{ .Values.s4dbsGrafanaDeployment.port }}
+      port: {{ .Values.s4dbsGrafanaDeployment.port  | default "3000" }}
+      targetPort: {{ .Values.s4dbsGrafanaDeployment.port  | default "3000" }}

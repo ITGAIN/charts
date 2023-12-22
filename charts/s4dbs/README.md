@@ -28,7 +28,7 @@ In order to run successfully, some things have to be upn front:
 Use kubectl or oc or openshift web frontend to create or request a new project to deploy speedgain for database into.
 
 ### 2. Speedgain License configmap
-Switch to your desired a just created new proct and add the license file as a configmap. The license file is available from itgain download portal. Having questions? ask support@itgain.de for help
+Switch to your desired project/namepsace or create a new one and add the license file as a configmap. The license file is available from itgain download portal. Having questions? ask support@itgain.de for help
 
 ```
 kubectl create configmap s4dbs-licence --from-file ./licence/Speedgain_for_Databases.licence
