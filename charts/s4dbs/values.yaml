@@ -7,7 +7,7 @@ frontendConfigMode: false
 
 ### START * not needed if frontendConfigMode set to false ###
 # serverHostname is the public available dns / server name - e.g. route in an openshift 
-serverHostname: ##enter dns name of route here (will be created later) ##
+serverHostname: localhost ##enter dns name of route here (will be created later) ##
 
 # servicePort is the public service /rest-api port for the frontend to redirect correctly - change to 8080 (port of reverse proxy) if not using a route or ingress up front s4dbs
 servicePort: 80
