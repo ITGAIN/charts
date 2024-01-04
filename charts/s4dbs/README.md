@@ -14,7 +14,19 @@ In order to run successfully, some things have to be upn front:
 
 Use kubectl or oc or openshift web frontend to create or request a new project to deploy speedgain for database into.
 
-### 2. Adding Persistent Volume Claims
+### 2. Speedgain License configmap
+Switch to your desired namespace/project and add the license file as a configmap (only needed during first setup, all coming licences can be added via web frontend). The license file is available from itgain download portal. Having questions? ask support@itgain.de for help
+
+```
+kubectl create configmap s4dbs-licence --from-file ./licence/Speedgain_for_Databases.licence
+```
+or
+````
+oc create configmap s4dbs-licence --from-file Speedgain_for_Databases.licence
+````
+
+
+### 3. Adding Persistent Volume Claims
 The helm chart does not create PVC / Persistenc Volume Claims. If you are not allowed to create a PVC on your own, ask your administrator to do it for you in your project. Storage size is just a first step - can be adjusted based on your needs.
 
 ````
