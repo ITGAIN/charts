@@ -8,7 +8,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: {{ .Values.pdb.storageClassName  | default "managed-csi" }} 
+  storageClassName: {{ .Values.s4dbsPostgresDeployment.storageClassName  | default "managed-csi" }} 
   # edit storage class name according to your k8s provider in values.yaml
   resources:
     requests:
