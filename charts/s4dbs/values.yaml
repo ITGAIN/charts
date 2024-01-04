@@ -37,7 +37,7 @@ s4dbsPostgresDeployment:
   image: timescale/timescaledb:2.11.2-pg13
   persistentVolumeClaimName: s4dbs-postgres-pv-claim
   persistentVolumeClaimSize: 100G
-  storageClassName: managed-csi #change to map you storage provider
+  storageClassName: something #change to map you storage provider, like managed-csi on AZURE or thin on OpenShift
 
 # s4dbsServiceDeployment defines timescale image and varas
 s4dbsServiceDeployment: 
