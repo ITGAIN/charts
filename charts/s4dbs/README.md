@@ -27,7 +27,7 @@ oc create configmap s4dbs-licence --from-file Speedgain_for_Databases.licence
 
 
 ### 3. Adding Persistent Volume Claims
-The helm chart does not create PVC / Persistenc Volume Claims. If you are not allowed to create a PVC on your own, ask your administrator to do it for you in your project. Storage size is just a first step - can be adjusted based on your needs.
+The helm chart does create PVC / Persistenc Volume Claims if you choose a valid storage class name. You may want to create one up front the deployment to adjust some more parameters. The chart will recognize a pre-existing PVC and not create a new one / overwrite the existing one. If you are not allowed to create a PVC on your own, ask your administrator to do it for you in your project. Storage size is just a first step - can be adjusted based on your needs.
 
 ````
 apiVersion: v1
