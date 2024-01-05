@@ -47,4 +47,5 @@ spec:
 ## Open Speedgain for Databases Web Frontend
 The Helm Chart should have created a route and/or load balancer four you. Look for the load balancer or route adress in your openshift or kubernetes frontend / console to open Speedgain for Databases.
 In an Openshift environment this is typically:
-**http://s4dbs-\<Projectname\>.apps.\<OpenShiftDNSName\>**
+
+`http://s4dbs-<Projectname>.apps.<OpenShiftDNSName>`
