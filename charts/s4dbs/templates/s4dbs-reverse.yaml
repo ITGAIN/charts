@@ -46,3 +46,17 @@ spec:
     - protocol: TCP
       port: {{ .Values.s4dbsReverseDeployment.publicPort  | default "80" }}
       targetPort: {{ .Values.s4dbsReverseDeployment.port  | default "8080" }}
+
+---
+{{- if .Capabilities.APIVersions.Has "route.openshift.io/v1/Route" }}
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: s4dbs
+spec:
+  to:
+    kind: Service
+    name: s4dbs-reverse-service
+  port:
+    targetPort: {{ .Values.s4dbsReverseDeployment.port  | default "8080" }}
+{{- end }}
