@@ -36,13 +36,4 @@ spec:
             value: {{ .Values.pdb.pdbUser | default "postgres" }}
           - name: SPGLOGLEVEL
             value: {{ .Values.s4dbsCollectorDeployment.spgLogLevel | default "Info" }}
-        volumeMounts:
-          - mountPath: /SPEEDGAIN/licence/Speedgain_for_Databases.licence
-            subPath: Speedgain_for_Databases.licence
-            name: s4dbs-licence
-            readOnly: true
       restartPolicy: Always
-      volumes:
-      - name: s4dbs-licence
-        configMap:
-          name: s4dbs-licence
