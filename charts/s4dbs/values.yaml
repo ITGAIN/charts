@@ -29,7 +29,7 @@ pdb:
 
 # s4dbsCollectorDeployment defines collector image and varas
 s4dbsCollectorDeployment:
-  image: docker.io/itgainis/s4dbs_collector:1.7.0
+  image: docker.io/itgainis/s4dbs_collector:1.8.2
   spgLogLevel: INFO
 
 # s4dbsPostgresDeployment defines timescale image and varas
@@ -41,18 +41,18 @@ s4dbsPostgresDeployment:
 
 # s4dbsServiceDeployment defines timescale image and varas
 s4dbsServiceDeployment: 
-  image: docker.io/itgainis/s4dbs_service:1.7.0
+  image: docker.io/itgainis/s4dbs_service:1.8.2
   port: 8080
 
 # s4dbsGrafanaDeployment defines timescale image and varas
 s4dbsGrafanaDeployment: 
-  image: docker.io/itgainis/s4dbs_grafana:1.7.0
+  image: docker.io/itgainis/s4dbs_grafana:1.8.2
   port: 3000
   anonymousLogin: false
   
 # s4dbsFrontendDeployment defines timescale image and varas
 s4dbsFrontendDeployment: 
-  image: docker.io/itgainis/s4dbs_frontend:1.7.0
+  image: docker.io/itgainis/s4dbs_frontend:1.8.2
   port: 8080
 
 # s4dbsReverseDeployment defines timescale image and varas 
