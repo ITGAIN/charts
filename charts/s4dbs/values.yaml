@@ -29,34 +29,60 @@ pdb:
 
 # s4dbsCollectorDeployment defines collector image and varas
 s4dbsCollectorDeployment:
-  image: docker.io/itgainis/s4dbs_collector:1.8.2
+  image: docker.io/itgainis/s4dbs_collector:2.0.0
   spgLogLevel: INFO
+  requests_memory: "2Gi"
+  requests_cpu: "0.5"
+  limits_memory: "8Gi"
+  limits_cpu: "4"
 
 # s4dbsPostgresDeployment defines timescale image and varas
 s4dbsPostgresDeployment: 
-  image: docker.io/timescale/timescaledb:2.11.2-pg13
+  image: docker.io/itgainis/s4dbs_timescaledb:2.0.0
   persistentVolumeClaimName: s4dbs-postgres-pv-claim
   persistentVolumeClaimSize: 100G
   storageClassName: something #change to map you storage provider, like managed-csi on AZURE or thin on OpenShift
+  requests_memory: "1Gi"
+  requests_cpu: "1"
+  limits_memory: "16Gi"
+  limits_cpu: "8"
 
-# s4dbsServiceDeployment defines timescale image and varas
+# s4dbsServiceDeployment defines service image and varas
 s4dbsServiceDeployment: 
-  image: docker.io/itgainis/s4dbs_service:1.8.2
+  image: docker.io/itgainis/s4dbs_service:2.0.0
   port: 8080
+  requests_memory: "256Mi"
+  requests_cpu: "0.5"
+  limits_memory: "4Gi"
+  limits_cpu: "2"
 
-# s4dbsGrafanaDeployment defines timescale image and varas
+# s4dbsGrafanaDeployment defines grafana image and varas
 s4dbsGrafanaDeployment: 
-  image: docker.io/itgainis/s4dbs_grafana:1.8.2
+  image: docker.io/itgainis/s4dbs_grafana:2.0.0
   port: 3000
   anonymousLogin: false
+  requests_memory: "256Mi"
+  requests_cpu: "0.5"
+  limits_memory: "2Gi"
+  limits_cpu: "2"
   
-# s4dbsFrontendDeployment defines timescale image and varas
+# s4dbsFrontendDeployment defines frontend image and varas
 s4dbsFrontendDeployment: 
-  image: docker.io/itgainis/s4dbs_frontend:1.8.2
+  image: docker.io/itgainis/s4dbs_frontend:2.0.0
   port: 8080
+  requests_memory: "128Mi"
+  requests_cpu: "0.5"
+  limits_memory: "2Gi"
+  limits_cpu: "1"
 
-# s4dbsReverseDeployment defines timescale image and varas 
-s4dbsReverseDeployment: 
+# s4dbsReverseDeployment defines reverse proxy image and varas 
+s4dbsReverseDeployment:
+  enabled: true #set to false if you want to use own reverse proxy / ingress nginx 
+  external_traffic_service_type: LoadBalancer # set to Load Balancer, ClusterIP or NodePort to specify remote access type
   image: docker.io/nginx:1.27
   port: 8080
   publicPort: 80
+  requests_memory: "256Mi"
+  requests_cpu: "0.5"
+  limits_memory: "2Gi"
+  limits_cpu: "1"

@@ -37,6 +37,33 @@ spec:
             value: {{ .Values.serverHostname | default "notneeded" }}
           - name: GRAFANA_PORT
             value: {{ .Values.grafanaPort | default "notneeded" | quote }}
+
+        readinessProbe:
+          httpGet:
+            path: /s4dbs-ui
+            port: 8080
+          failureThreshold: 60
+          periodSeconds: 10
+        livenessProbe: 
+          httpGet:
+            path: /s4dbs-ui
+            port: 8080
+          failureThreshold: 5
+          periodSeconds: 10
+        startupProbe:
+          httpGet:
+            path: /s4dbs-ui
+            port: 8080
+          failureThreshold: 60
+          periodSeconds: 10
+          
+        resources:
+          requests:
+            memory: {{ .Values.s4dbsFrontendDeployment.requests_memory | quote }}
+            cpu: {{ .Values.s4dbsFrontendDeployment.requests_cpu | quote }}
+          limits:
+            memory: {{ .Values.s4dbsFrontendDeployment.limits_memory | quote }}
+            cpu: {{ .Values.s4dbsFrontendDeployment.limits_cpu | quote }}
       restartPolicy: Always
 ---
 apiVersion: v1

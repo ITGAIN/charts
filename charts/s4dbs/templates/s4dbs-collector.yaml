@@ -36,4 +36,28 @@ spec:
             value: {{ .Values.pdb.pdbUser | default "postgres" }}
           - name: SPGLOGLEVEL
             value: {{ .Values.s4dbsCollectorDeployment.spgLogLevel | default "Info" }}
+        
+        readinessProbe:
+          exec:
+            command: ["sh", "-c", "ps", "aux", "|", "grep", "java", "|", "grep", "Speedgain_for_Databases.jar"]
+          failureThreshold: 60
+          periodSeconds: 10
+        livenessProbe:
+          exec:
+             command: ["sh", "-c", "ps", "aux", "|", "grep", "java", "|", "grep", "Speedgain_for_Databases.jar"]
+          failureThreshold: 5
+          periodSeconds: 10
+        startupProbe:
+          exec:
+            command: ["sh", "-c", "ps", "aux", "|", "grep", "java", "|", "grep", "Speedgain_for_Databases.jar"]
+          failureThreshold: 60
+          periodSeconds: 10
+          
+        resources:
+          requests:
+            memory: {{ .Values.s4dbsCollectorDeployment.requests_memory | quote }}
+            cpu: {{ .Values.s4dbsCollectorDeployment.requests_cpu | quote }}
+          limits:
+            memory: {{ .Values.s4dbsCollectorDeployment.limits_memory | quote }}
+            cpu: {{ .Values.s4dbsCollectorDeployment.limits_cpu | quote }}
       restartPolicy: Always
