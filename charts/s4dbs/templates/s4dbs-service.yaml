@@ -38,6 +38,30 @@ spec:
             value: {{ .Values.pdb.pdbUser  | default "postgres" }}
           - name: SPGDB_SERVICE_HOME
             value: /tmp/spgdb_service_home/
+
+        readinessProbe:
+          exec:
+            command: ["curl", "-f", "localhost:{{ .Values.s4dbsServiceDeployment.port  | default 8080 }} /Speedgain_for_Databases_Service"]
+          failureThreshold: 60
+          periodSeconds: 10
+        livenessProbe:
+          exec:
+            command: ["curl", "-f", "localhost:{{ .Values.s4dbsServiceDeployment.port  | default 8080 }}/Speedgain_for_Databases_Service"]
+          failureThreshold: 5
+          periodSeconds: 10
+        startupProbe:
+          exec:
+            command: ["curl", "-f", "localhost:{{ .Values.s4dbsServiceDeployment.port  | default 8080 }} /Speedgain_for_Databases_Service"]
+          failureThreshold: 60
+          periodSeconds: 10
+          
+        resources:
+          requests:
+            memory: {{ .Values.s4dbsServiceDeployment.requests_memory | quote }}
+            cpu: {{ .Values.s4dbsServiceDeployment.requests_cpu | quote }}
+          limits:
+            memory: {{ .Values.s4dbsServiceDeployment.limits_memory | quote }}
+            cpu: {{ .Values.s4dbsServiceDeployment.limits_cpu | quote }}
       restartPolicy: Always
 ---
 apiVersion: v1

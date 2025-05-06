@@ -67,6 +67,30 @@ spec:
                 key: postgres-password
           - name: GF_DATABASE_SSL_MODE
             value: "disable"
+        
+        readinessProbe:
+          tcpSocket:
+            port: 3000
+          failureThreshold: 60
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 3000
+          failureThreshold: 5
+          periodSeconds: 10
+        startupProbe:
+          tcpSocket:
+            port: 3000
+          failureThreshold: 60
+          periodSeconds: 10
+
+        resources:
+          requests:
+            memory: {{ .Values.s4dbsGrafanaDeployment.requests_memory | quote }}
+            cpu: {{ .Values.s4dbsGrafanaDeployment.requests_cpu | quote }}
+          limits:
+            memory: {{ .Values.s4dbsGrafanaDeployment.limits_memory | quote }}
+            cpu: {{ .Values.s4dbsGrafanaDeployment.limits_cpu | quote }}
       restartPolicy: Always
 ---
 apiVersion: v1

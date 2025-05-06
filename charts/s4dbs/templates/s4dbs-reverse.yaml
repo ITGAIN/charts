@@ -1,3 +1,4 @@
+{{- if .Values.s4dbsReverseDeployment.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,12 +28,41 @@ spec:
             subPath: nginx.conf
             name: s4dbs-nginx-conf
             readOnly: true
+
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.s4dbsReverseDeployment.port  | default "8080" }}
+          failureThreshold: 60
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.s4dbsReverseDeployment.port  | default "8080" }}
+          failureThreshold: 5
+          periodSeconds: 10
+        startupProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.s4dbsReverseDeployment.port  | default "8080" }}
+          failureThreshold: 60
+          periodSeconds: 10
+          
+        resources:
+          requests:
+            memory: {{ .Values.s4dbsReverseDeployment.requests_memory | quote }}
+            cpu: {{ .Values.s4dbsReverseDeployment.requests_cpu | quote }}
+          limits:
+            memory: {{ .Values.s4dbsReverseDeployment.limits_memory | quote }}
+            cpu: {{ .Values.s4dbsReverseDeployment.limits_cpu | quote }}
       restartPolicy: Always
       volumes:
       - name: s4dbs-nginx-conf
         configMap:
           name: s4dbs-nginx-conf
+{{- end }}
 ---
+{{- if .Values.s4dbsReverseDeployment.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -40,15 +70,15 @@ metadata:
 spec:
   selector:
     app: s4dbs-reverse
-  type: LoadBalancer
+  type: {{ .Values.s4dbsReverseDeployment.external_traffic_service_type | default "LoadBalancer" }}
   externalTrafficPolicy: Cluster
   ports:
     - protocol: TCP
       port: {{ .Values.s4dbsReverseDeployment.publicPort  | default "80" }}
       targetPort: {{ .Values.s4dbsReverseDeployment.port  | default "8080" }}
-
+{{- end }}
 ---
-{{- if .Capabilities.APIVersions.Has "route.openshift.io/v1/Route" }}
+{{- if and .Values.s4dbsReverseDeployment.enabled ( .Capabilities.APIVersions.Has "route.openshift.io/v1/Route") }}
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
