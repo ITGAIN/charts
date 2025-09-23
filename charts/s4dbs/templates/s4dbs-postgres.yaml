@@ -55,6 +55,8 @@ spec:
           value: /var/lib/postgresql/data/pgdata/16
         - name: INIT_CONTAINER
           value: "true"
+        - name: POSTGRES_INITDB_ARGS
+          value: {{ .Values.s4dbsPostgresDeployment.postgres_initdb_args | quote }}
         resources:
           requests:
             memory: {{ .Values.s4dbsPostgresDeployment.requests_memory | quote }}
@@ -64,7 +66,7 @@ spec:
             cpu: {{ .Values.s4dbsPostgresDeployment.limits_cpu | quote }}
         volumeMounts:
         - name: postgres-pv-storage
-          mountPath: /var/lib/postgresql/data/
+          mountPath: /var/lib/postgresql/data:z
       containers:
       - name: s4dbs-postgres
         image: {{ .Values.s4dbsPostgresDeployment.image }}
@@ -79,22 +81,26 @@ spec:
               key: postgres-password
         - name: POSTGRES_DB
           value: speedgain
+        - name: OLD_DATA_DIR
+          value: /var/lib/postgresql/data/pgdata
         - name: NEW_DATA_DIR
           value: /var/lib/postgresql/data/pgdata/16
+        - name: POSTGRES_OPTIONS
+          value: {{ .Values.s4dbsPostgresDeployment.postgres_options | quote }}
         
         readinessProbe:
           exec:
-            command: ["psql", "-w", "-U", "postgres", "-h", "localhost", "-d", "postgres", "-c", "SELECT 1"]
+            command: ["psql", "-w", "-U", "postgres", "-h", "localhost", "-d", "speedgain", "-c", "SELECT 1"]
           failureThreshold: 60
           periodSeconds: 10
         livenessProbe:
           exec:
-            command: ["psql", "-w", "-U", "postgres", "-h", "localhost", "-d", "postgres", "-c", "SELECT 1"]
+            command: ["psql", "-w", "-U", "postgres", "-h", "localhost", "-d", "speedgain", "-c", "SELECT 1"]
           failureThreshold: 5
           periodSeconds: 10
         startupProbe:
           exec:
-            command: ["psql", "-w", "-U", "postgres", "-h", "localhost", "-d", "postgres", "-c", "SELECT 1"]
+            command: ["psql", "-w", "-U", "postgres", "-h", "localhost", "-d", "speedgain", "-c", "SELECT 1"]
           failureThreshold: 60
           periodSeconds: 10
 
@@ -107,7 +113,7 @@ spec:
             cpu: {{ .Values.s4dbsPostgresDeployment.limits_cpu | quote }}
         volumeMounts:
         - name: postgres-pv-storage
-          mountPath: /var/lib/postgresql/data
+          mountPath: /var/lib/postgresql/data:z
 ---
 apiVersion: v1
 kind: Service
