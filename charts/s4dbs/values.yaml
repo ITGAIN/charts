@@ -29,7 +29,7 @@ pdb:
 
 # s4dbsCollectorDeployment defines collector image and varas
 s4dbsCollectorDeployment:
-  image: docker.io/itgainis/s4dbs_collector:2.0.0
+  image: docker.io/itgainis/s4dbs_collector:2.1.0
   spgLogLevel: INFO
   requests_memory: "2Gi"
   requests_cpu: "0.5"
@@ -38,10 +38,12 @@ s4dbsCollectorDeployment:
 
 # s4dbsPostgresDeployment defines timescale image and varas
 s4dbsPostgresDeployment: 
-  image: docker.io/itgainis/s4dbs_timescaledb:2.0.0
+  image: docker.io/itgainis/s4dbs_timescaledb:2.1.0
   persistentVolumeClaimName: s4dbs-postgres-pv-claim
   persistentVolumeClaimSize: 100G
-  storageClassName: something #change to map you storage provider, like managed-csi on AZURE or thin on OpenShift
+  storageClassName: something # change to map you storage provider, like managed-csi on AZURE or thin on OpenShift
+  postgres_initdb_args: ""    # set for example to "--wal-segsize=XYZ" if you changed WAL segment size in your S4DBs V1.8.2 PDB - important for migration to V2.0.0
+  postgres_options: ""        # override with your custom configuration parameters
   requests_memory: "1Gi"
   requests_cpu: "1"
   limits_memory: "16Gi"
@@ -49,7 +51,7 @@ s4dbsPostgresDeployment:
 
 # s4dbsServiceDeployment defines service image and varas
 s4dbsServiceDeployment: 
-  image: docker.io/itgainis/s4dbs_service:2.0.0
+  image: docker.io/itgainis/s4dbs_service:2.1.0
   port: 8080
   requests_memory: "256Mi"
   requests_cpu: "0.5"
@@ -58,7 +60,7 @@ s4dbsServiceDeployment:
 
 # s4dbsGrafanaDeployment defines grafana image and varas
 s4dbsGrafanaDeployment: 
-  image: docker.io/itgainis/s4dbs_grafana:2.0.0
+  image: docker.io/itgainis/s4dbs_grafana:2.1.0
   port: 3000
   anonymousLogin: false
   requests_memory: "256Mi"
@@ -68,7 +70,7 @@ s4dbsGrafanaDeployment:
   
 # s4dbsFrontendDeployment defines frontend image and varas
 s4dbsFrontendDeployment: 
-  image: docker.io/itgainis/s4dbs_frontend:2.0.0
+  image: docker.io/itgainis/s4dbs_frontend:2.1.0
   port: 8080
   requests_memory: "128Mi"
   requests_cpu: "0.5"
@@ -79,7 +81,7 @@ s4dbsFrontendDeployment:
 s4dbsReverseDeployment:
   enabled: true #set to false if you want to use own reverse proxy / ingress nginx 
   external_traffic_service_type: LoadBalancer # set to Load Balancer, ClusterIP or NodePort to specify remote access type
-  image: docker.io/nginx:1.27
+  image: docker.io/nginx:1.29.1-alpine
   port: 8080
   publicPort: 80
   requests_memory: "256Mi"
