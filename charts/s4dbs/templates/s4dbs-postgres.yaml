@@ -66,7 +66,7 @@ spec:
             cpu: {{ .Values.s4dbsPostgresDeployment.limits_cpu | quote }}
         volumeMounts:
         - name: postgres-pv-storage
-          mountPath: /var/lib/postgresql/data:z
+          mountPath: /var/lib/postgresql/data
       containers:
       - name: s4dbs-postgres
         image: {{ .Values.s4dbsPostgresDeployment.image }}
@@ -113,7 +113,7 @@ spec:
             cpu: {{ .Values.s4dbsPostgresDeployment.limits_cpu | quote }}
         volumeMounts:
         - name: postgres-pv-storage
-          mountPath: /var/lib/postgresql/data:z
+          mountPath: /var/lib/postgresql/data
 ---
 apiVersion: v1
 kind: Service
