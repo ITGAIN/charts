@@ -8,7 +8,7 @@ Some adjustments have to be made to the values.yml and some objects have to be c
 The storage class name needs to be defined if no PVC was created up front. This name will be used to create a PV and PVC during helm deployment. See last chapter in this readme to create on PVC for the repository database on your own.
 
 ## Prereqs
-In order to run successfully, some things have to be upn front:
+In order to run successfully, some things have to be up front:
 
 ### 1. Create a Namespace / poject if not done yet
 
