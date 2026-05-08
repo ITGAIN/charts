@@ -5,8 +5,8 @@ metadata:
     app: s4dbs-collector
   name: s4dbs-collector-deployment
 spec:
-  replicas: 1
-  strategy: 
+  replicas: {{ .Values.s4dbsCollectorDeployment.replicas | default 1 }}
+  strategy:
     type: Recreate
   selector:
     matchLabels:
@@ -26,7 +26,7 @@ spec:
           - name: PDB_HOST
             value: {{ .Values.pdb.pdbHost | default "s4dbs-postgres-service" }}
           - name: PDB_PASS
-            valueFrom: 
+            valueFrom:
              secretKeyRef:
                name: s4dbs-secrets
                key: postgres-password
@@ -36,7 +36,7 @@ spec:
             value: {{ .Values.pdb.pdbUser | default "postgres" }}
           - name: SPGLOGLEVEL
             value: {{ .Values.s4dbsCollectorDeployment.spgLogLevel | default "Info" }}
-        
+
         readinessProbe:
           exec:
             command: ["sh", "-c", "ps", "aux", "|", "grep", "java", "|", "grep", "Speedgain_for_Databases.jar"]
@@ -52,7 +52,7 @@ spec:
             command: ["sh", "-c", "ps", "aux", "|", "grep", "java", "|", "grep", "Speedgain_for_Databases.jar"]
           failureThreshold: 60
           periodSeconds: 10
-          
+
         resources:
           requests:
             memory: {{ .Values.s4dbsCollectorDeployment.requests_memory | quote }}

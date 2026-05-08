@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: s4dbs-mcp
+  name: s4dbs-mcp-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: s4dbs-mcp
+  template:
+    metadata:
+      labels:
+        app: s4dbs-mcp
+    spec:
+      containers:
+      - name: s4dbs-mcp
+        image: {{ .Values.s4dbsMcpDeployment.image }}
+        ports:
+        - containerPort: {{ .Values.s4dbsMcpDeployment.port  | default "8000" }}
+        imagePullPolicy: Always
+        env:
+          - name: S4DBS_URL
+            value: {{ .Values.s4dbsMcpDeployment.s4dbsUrl  | default "http://s4dbs-service-service:8080/Speedgain_for_Databases_Service/speedgain" }}
+          - name: MCP_AGENT
+            value: {{ .Values.s4dbsMcpDeployment.s4dbsUser  | default "admin" }}
+          - name: S4DBS_PASSWORD
+            valueFrom: 
+             secretKeyRef:
+               name: s4dbs-secrets
+               key: mcp-password
+
+        readinessProbe:
+          exec:
+            command: ["python", "-c", "import http.client; c=http.client.HTTPConnection('127.0.0.1', {{ .Values.s4dbsMcpDeployment.port  | default 8080 }}, timeout=2); c.request('GET', '/mcp'); exit(0 if c.getresponse().status == 406 else 1)"]
+          failureThreshold: 60
+          periodSeconds: 10
+        livenessProbe:
+          exec:
+            command: ["python", "-c", "import http.client; c=http.client.HTTPConnection('127.0.0.1', {{ .Values.s4dbsMcpDeployment.port  | default 8080 }}, timeout=2); c.request('GET', '/mcp'); exit(0 if c.getresponse().status == 406 else 1)"]
+          failureThreshold: 5
+          periodSeconds: 10
+        startupProbe:
+          exec:
+            command: ["python", "-c", "import http.client; c=http.client.HTTPConnection('127.0.0.1', {{ .Values.s4dbsMcpDeployment.port  | default 8080 }}, timeout=2); c.request('GET', '/mcp'); exit(0 if c.getresponse().status == 406 else 1)"]
+          failureThreshold: 60
+          periodSeconds: 10
+          
+        resources:
+          requests:
+            memory: {{ .Values.s4dbsMcpDeployment.requests_memory | quote }}
+            cpu: {{ .Values.s4dbsMcpDeployment.requests_cpu | quote }}
+          limits:
+            memory: {{ .Values.s4dbsMcpDeployment.limits_memory | quote }}
+            cpu: {{ .Values.s4dbsMcpDeployment.limits_cpu | quote }}
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s4dbs-mcp-service
+spec:
+  selector:
+    app: s4dbs-mcp
+  ports:
+    - protocol: TCP
+      port: {{ .Values.s4dbsMcpDeployment.port  | default "8000" }}
+      targetPort: {{ .Values.s4dbsMcpDeployment.port  | default "8000" }}
