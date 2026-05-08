@@ -28,21 +28,35 @@ spec:
             subPath: nginx.conf
             name: s4dbs-nginx-conf
             readOnly: true
-
+        {{- if or ( .Values.s4dbsReverseDeployment.sslCertManual ) ( and .Values.s4dbsReverseDeployment.sslCertFullchain .Values.s4dbsReverseDeployment.sslCertKey ) }}
+          - mountPath: /etc/ssl/ssl_cert.key
+            subPath: tls.key
+            name: s4dbs-ssl-cert
+            readOnly: true
+        {{- end }}
+        {{- if or ( .Values.s4dbsReverseDeployment.sslCertManual ) ( and .Values.s4dbsReverseDeployment.sslCertFullchain .Values.s4dbsReverseDeployment.sslCertKey ) }}
+          - mountPath: /etc/ssl/ssl_cert.crt
+            subPath: tls.crt
+            name: s4dbs-ssl-cert
+            readOnly: true
+        {{- end }}
         readinessProbe:
           httpGet:
+            scheme: {{ .Values.s4dbsReverseDeployment.protocol  | default "HTTP" }}
             path: /
             port: {{ .Values.s4dbsReverseDeployment.port  | default "8080" }}
           failureThreshold: 60
           periodSeconds: 10
         livenessProbe:
           httpGet:
+            scheme: {{ .Values.s4dbsReverseDeployment.protocol  | default "HTTP" }}
             path: /
             port: {{ .Values.s4dbsReverseDeployment.port  | default "8080" }}
           failureThreshold: 5
           periodSeconds: 10
         startupProbe:
           httpGet:
+            scheme: {{ .Values.s4dbsReverseDeployment.protocol  | default "HTTP" }}
             path: /
             port: {{ .Values.s4dbsReverseDeployment.port  | default "8080" }}
           failureThreshold: 60
@@ -60,6 +74,11 @@ spec:
       - name: s4dbs-nginx-conf
         configMap:
           name: s4dbs-nginx-conf
+      {{- if or ( .Values.s4dbsReverseDeployment.sslCertManual ) ( and .Values.s4dbsReverseDeployment.sslCertFullchain .Values.s4dbsReverseDeployment.sslCertKey ) }}
+      - name: s4dbs-ssl-cert
+        secret:
+          secretName: s4dbs-ssl-cert
+      {{- end }}
 {{- end }}
 ---
 {{- if .Values.s4dbsReverseDeployment.enabled }}

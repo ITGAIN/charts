@@ -33,6 +33,10 @@ spec:
       labels:
         app: s4dbs-postgres
     spec:
+      {{- if ge ( .Values.s4dbsPostgresDeployment.fs_group | int ) 0 }}
+      securityContext:
+        fsGroup: {{ .Values.s4dbsPostgresDeployment.fs_group }}
+      {{- end }}
       volumes:
       - name: postgres-pv-storage
         persistentVolumeClaim:
