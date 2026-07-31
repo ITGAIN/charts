@@ -59,8 +59,16 @@ spec:
           value: /var/lib/postgresql/data/pgdata/16
         - name: INIT_CONTAINER
           value: "true"
+        - name: PGCTLTIMEOUT
+          value: {{ .Values.s4dbsPostgresDeployment.pg_ctl_timeout | default "300" | quote }}
         - name: POSTGRES_INITDB_ARGS
           value: {{ .Values.s4dbsPostgresDeployment.postgres_initdb_args | quote }}
+        - name: SPG_PDB_SKIP_TIMESCALE_UPGRADE
+          value: {{ .Values.s4dbsPostgresDeployment.spg_pdb_skip_timescale_upgrade | quote }}
+        - name: SPG_PDB_DO_CLEANUP_CHUNKS
+          value: {{ .Values.s4dbsPostgresDeployment.spg_pdb_do_cleanup_chunks | quote }}
+        - name: SPG_PDB_DO_RECREATE_CAGGS
+          value: {{ .Values.s4dbsPostgresDeployment.spg_pdb_do_recreate_caggs | quote }}
         resources:
           requests:
             memory: {{ .Values.s4dbsPostgresDeployment.requests_memory | quote }}
@@ -91,7 +99,10 @@ spec:
           value: /var/lib/postgresql/data/pgdata/16
         - name: POSTGRES_OPTIONS
           value: {{ .Values.s4dbsPostgresDeployment.postgres_options | quote }}
-        
+        - name: PGCTLTIMEOUT
+          value: {{ .Values.s4dbsPostgresDeployment.pg_ctl_timeout | default "300" | quote }}
+        - name: SPG_PDB_SKIP_TIMESCALE_UPGRADE
+          value: "YES"
         readinessProbe:
           exec:
             command: ["psql", "-w", "-U", "postgres", "-h", "localhost", "-d", "speedgain", "-c", "SELECT 1"]
