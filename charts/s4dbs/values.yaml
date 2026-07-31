@@ -29,7 +29,7 @@ pdb:
 
 # s4dbsCollectorDeployment defines collector image and varas
 s4dbsCollectorDeployment:
-  image: docker.io/itgainis/s4dbs_collector:2.2.0
+  image: docker.io/itgainis/s4dbs_collector:2.3.0
   replicas: 1
   spgLogLevel: INFO
   requests_memory: "2Gi"
@@ -39,7 +39,7 @@ s4dbsCollectorDeployment:
 
 # s4dbsPostgresDeployment defines timescale image and varas
 s4dbsPostgresDeployment:
-  image: docker.io/itgainis/s4dbs_timescaledb:2.2.0
+  image: docker.io/itgainis/s4dbs_timescaledb:2.3.0
   persistentVolumeClaimName: s4dbs-postgres-pv-claim
   persistentVolumeClaimSize: 100G
   storageClassName: something            # change to map you storage provider, like managed-csi on AZURE or thin on OpenShift
@@ -50,10 +50,15 @@ s4dbsPostgresDeployment:
   limits_memory: "16Gi"
   limits_cpu: "8"
   fs_group: -1                # defines the fsGroup within the SecurityContext config of the s4dbs_postgres pod. Set it to -1 to disable securityContext settings. Set it to a positive value to set the fsGroup ID.
+  # Special migration switches to do required cleanups or additional migrations
+  spg_pdb_skip_timescale_upgrade: ""     # YES or NO - default is NO - disables automated upgrade of the TimeScaleDB extension
+  spg_pdb_do_cleanup_chunks:      ""     # YES or NO - default is NO - checks and deletes orphaned chunk tables before trying to upgrade the TimeScaleDB extension
+  spg_pdb_do_recreate_caggs:      ""     # YES or NO - default is NO - if set to YES all PostgreSQL MQTs for Speedgain will be dropped and recreated to migrate them to the "new format" required for TimeScaleDB V2.26.1+
+  pg_ctl_timeout: "300"                  # Increase value if startup issues are observed
 
 # s4dbsServiceDeployment defines service image and varas
 s4dbsServiceDeployment:
-  image: docker.io/itgainis/s4dbs_service:2.2.0
+  image: docker.io/itgainis/s4dbs_service:2.3.0
   port: 8080
   requests_memory: "256Mi"
   requests_cpu: "0.5"
@@ -62,7 +67,7 @@ s4dbsServiceDeployment:
 
 # s4dbsServiceDeployment defines service image and varas
 s4dbsMcpDeployment:
-  image: docker.io/itgainis/s4dbs_mcp:2.2.0
+  image: docker.io/itgainis/s4dbs_mcp:2.3.0
   port: 8000
   s4dbsUrl: http://s4dbs-service-service:8080/Speedgain_for_Databases_Service/speedgain
   s4dbsUser: "admin"
@@ -73,7 +78,7 @@ s4dbsMcpDeployment:
 
 # s4dbsGrafanaDeployment defines grafana image and varas
 s4dbsGrafanaDeployment:
-  image: docker.io/itgainis/s4dbs_grafana:2.2.0
+  image: docker.io/itgainis/s4dbs_grafana:2.3.0
   port: 3000
   anonymousLogin: false
   requests_memory: "256Mi"
@@ -83,7 +88,7 @@ s4dbsGrafanaDeployment:
 
 # s4dbsFrontendDeployment defines frontend image and varas
 s4dbsFrontendDeployment:
-  image: docker.io/itgainis/s4dbs_frontend:2.2.0
+  image: docker.io/itgainis/s4dbs_frontend:2.3.0
   port: 8080
   requests_memory: "128Mi"
   requests_cpu: "0.5"
@@ -94,7 +99,7 @@ s4dbsFrontendDeployment:
 s4dbsReverseDeployment:
   enabled: true #set to false if you want to use own reverse proxy / ingress nginx
   external_traffic_service_type: LoadBalancer # set to Load Balancer, ClusterIP or NodePort to specify remote access type
-  image: docker.io/nginx:1.29.7-alpine
+  image: docker.io/nginx:1.30.2-alpine
   port: 8080
   protocol: HTTP #Controls if HTTP or SSL/HTTPS communication is to use. Basically: set this to HTTPS if publicPort is 443. Using SSL/HTTPS without setting protocol to HTTPS will cause probes to fail!
   publicPort: 80 #Recommendation is port 80 for HTTP or 443 for HTTPS communication.
